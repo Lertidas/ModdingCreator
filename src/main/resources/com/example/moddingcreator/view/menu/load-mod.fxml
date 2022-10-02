@@ -1,8 +1,5 @@
 <?xml version="1.0" encoding="UTF-8"?>
 
-<?import java.lang.*?>
-<?import java.util.*?>
-<?import javafx.scene.*?>
 <?import javafx.scene.control.*?>
 <?import javafx.scene.layout.*?>
 
@@ -10,5 +7,7 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.moddingcreator.controllers.menu.LoadModController"
             prefHeight="400.0" prefWidth="600.0">
-
+    <Label fx:id="loadLabel" layoutX="150" layoutY="290">Saved Mods</Label>
+    <ComboBox fx:id="savedMods" layoutX="140" layoutY="320"/>
+    <Button fx:id="loadModButton" layoutX="300" layoutY="250" onAction="#onLoadModClick">Load Mod</Button>
 </AnchorPane>

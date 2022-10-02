@@ -8,8 +8,6 @@ module com.example.moddingcreator {
 
     opens com.example.moddingcreator to javafx.fxml;
     exports com.example.moddingcreator;
-    exports com.example.moddingcreator.controllers;
-    opens com.example.moddingcreator.controllers to javafx.fxml;
     exports com.example.moddingcreator.controllers.menu;
     opens com.example.moddingcreator.controllers.menu to javafx.fxml;
     exports com.example.moddingcreator.controllers.mod;

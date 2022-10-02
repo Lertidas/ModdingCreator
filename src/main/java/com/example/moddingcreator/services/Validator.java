@@ -7,7 +7,11 @@ public class Validator {
         return validateName(modName) && !FileUtil.hasItemInDirectory(output, modName);
     }
 
+    public static boolean validateModLoad(String modName) {
+        return validateName(modName);
+    }
+
     public static boolean validateName(String name) {
-        return !name.equals("");
+        return name != null && !name.equals("");
     }
 }

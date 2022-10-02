@@ -1,5 +1,7 @@
 package com.example.moddingcreator.controllers.menu;
 
+import com.example.moddingcreator.data.InstanceData;
+import com.example.moddingcreator.services.GradleCommandRunner;
 import com.example.moddingcreator.services.Validator;
 import com.example.moddingcreator.util.FileUtil;
 import com.example.moddingcreator.util.SceneUtil;
@@ -37,19 +39,24 @@ public class NewModController implements Initializable {
         forgeVersions.setItems(FXCollections.observableArrayList(
                 FileUtil.getItemsInDirectory("src/main/resources/com/example/moddingcreator/forgeversions")
         ));
-        forgeVersions.setValue(forgeVersions.getItems().get(0));
+        if (forgeVersions.getItems().size() > 0) {
+            forgeVersions.setValue(forgeVersions.getItems().get(0));
+        }
     }
 
     @FXML
-    protected void onCreateModClicked(ActionEvent event) throws IOException {
+    protected void onCreateModClicked(ActionEvent event) throws IOException, InterruptedException {
+        String modName = modNameTextField.getText();
         // Try to create Mod
-        if (Validator.validateModSave("output/createdmods", modNameTextField.getText())) {
+        if (Validator.validateModSave(InstanceData.modOutputPath, modName)) {
             // Clone forge mod repo to output/createdmods
             FileUtil.cloneRepository(
                     "src/main/resources/com/example/moddingcreator/forgeversions/" + forgeVersions.getValue(),
-                    "output/createdmods",
-                    modNameTextField.getText()
+                    InstanceData.modOutputPath,
+                    modName
             );
+            // Setup mod
+            GradleCommandRunner.setup(modName);
             // Successfully created mod
             System.out.println("Successfully created mod!");
             // Load in mod
