@@ -1,0 +1,12 @@
+<?xml version="1.0" encoding="UTF-8"?>
+
+<?import javafx.scene.control.*?>
+<?import javafx.scene.layout.*?>
+
+<AnchorPane xmlns="http://javafx.com/javafx"
+            xmlns:fx="http://javafx.com/fxml"
+            fx:controller="com.example.moddingcreator.controllers.menu.MainMenuController"
+            prefHeight="400.0" prefWidth="600.0">
+    <Button text="Create Mod" layoutX="40" layoutY="100" prefWidth="100" onAction="#onNewModClicked"/>
+    <Button text="Load Mod" layoutX="180" layoutY="100" prefWidth="100"  onAction="#onLoadModClicked"/>
+</AnchorPane>
