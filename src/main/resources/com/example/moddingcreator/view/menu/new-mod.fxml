@@ -10,8 +10,10 @@
             xmlns:fx="http://javafx.com/fxml"
             fx:controller="com.example.moddingcreator.controllers.menu.NewModController"
             prefHeight="400.0" prefWidth="600.0">
-    <Label fx:id="modNameLabel" layoutX="150" layoutY="200">Mod Name</Label>
-    <TextField fx:id="modNameTextField" layoutX="110" layoutY="230"/>
+    <Label fx:id="modNameLabel" layoutX="150" layoutY="100">Mod Name</Label>
+    <TextField fx:id="modNameTextField" layoutX="110" layoutY="130"/>
+    <Label fx:id="modidLabel" layoutX="150" layoutY="200">Modid</Label>
+    <TextField fx:id="modidTextField" layoutX="110" layoutY="230"/>
     <Label fx:id="modVersionLabel" layoutX="150" layoutY="290">Mod Version</Label>
     <ComboBox fx:id="forgeVersions" layoutX="140" layoutY="320"/>
     <Button fx:id="createModButton" layoutX="300" layoutY="250" onAction="#onCreateModClicked">Create Mod</Button>

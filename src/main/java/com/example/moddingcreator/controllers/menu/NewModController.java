@@ -14,6 +14,7 @@ import javafx.scene.control.ComboBox;
 import javafx.scene.control.Label;
 import javafx.scene.control.TextField;
 
+import java.io.File;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -24,6 +25,12 @@ public class NewModController implements Initializable {
 
     @FXML
     private TextField modNameTextField;
+
+    @FXML
+    private Label modidLabel;
+
+    @FXML
+    private TextField modidTextField;
 
     @FXML
     private Label modVersionLabel;
@@ -47,8 +54,9 @@ public class NewModController implements Initializable {
     @FXML
     protected void onCreateModClicked(ActionEvent event) throws IOException, InterruptedException {
         String modName = modNameTextField.getText();
+        String modid = modidTextField.getText();
         // Try to create Mod
-        if (Validator.validateModSave(InstanceData.modOutputPath, modName)) {
+        if (Validator.validateModSave(InstanceData.modOutputPath, modName, modid)) {
             // Clone forge mod repo to output/createdmods
             FileUtil.cloneRepository(
                     "src/main/resources/com/example/moddingcreator/forgeversions/" + forgeVersions.getValue(),
@@ -57,6 +65,10 @@ public class NewModController implements Initializable {
             );
             // Setup mod
             GradleCommandRunner.setup(modName);
+            // Adjust files to match mod
+            InstanceData.modName = modName;
+            InstanceData.modid = modid;
+            writeModid(modid);
             // Successfully created mod
             System.out.println("Successfully created mod!");
             // Load in mod
@@ -66,5 +78,12 @@ public class NewModController implements Initializable {
             // Return error creating mod
             System.out.println("Cannot create mod, name exists or is invalid");
         }
+    }
+
+    private void writeModid(String modid) {
+        String examplePath = InstanceData.modOutputPath +
+                "src/main/java/com/example/";
+        // Change directory name
+        new File(examplePath + "examplemod").renameTo(new File(examplePath + modid));
     }
 }
