@@ -5,6 +5,8 @@ module com.example.moddingcreator {
     requires org.controlsfx.controls;
     requires org.kordamp.bootstrapfx.core;
     requires org.apache.commons.io;
+//    requires gradle.tooling.api;
+    requires java.xml;
 
     opens com.example.moddingcreator to javafx.fxml;
     exports com.example.moddingcreator;

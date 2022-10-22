@@ -12,18 +12,6 @@ public class FileUtil {
         return new File(path).list();
     }
 
-    public static boolean hasItemInDirectory(String path, String item) {
-        String[] strings = new File(path).list();
-        if (strings != null) {
-            for (String s : strings) {
-                if (item.equals(s)) {
-                    return true;
-                }
-            }
-        }
-        return false;
-    }
-
     public static void cloneRepository(String source, String destination, String repoName) throws IOException {
         copyDirectory(new File(source), new File(destination + "/" + repoName));
     }
@@ -32,13 +20,23 @@ public class FileUtil {
         FileUtils.copyDirectory(sourceDirectory, destinationDirectory);
     }
 
+    public static void deleteDirectory(String filePath) throws IOException {
+        deleteDirectory(new File(filePath));
+    }
+
+    public static void deleteDirectory(File directory) throws IOException {
+        FileUtils.deleteDirectory(directory);
+    }
+
     public static boolean renameFile(String currentPath, String renamedPath) {
         return new File(currentPath).renameTo(new File(renamedPath));
     }
 
     public static void replaceAllOccurrences(String path, String currentString, String newString, boolean lowerAndUpperCase) {
         replaceAllOccurrences(path, currentString, newString);
-        replaceAllOccurrences(path, currentString.toLowerCase(), newString.toLowerCase());
+        if (lowerAndUpperCase) {
+            replaceAllOccurrences(path, currentString.toLowerCase(), newString.toLowerCase());
+        }
     }
 
     public static void replaceAllOccurrences(String path, String currentString, String newString) {

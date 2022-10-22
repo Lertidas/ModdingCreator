@@ -7,7 +7,7 @@ import java.io.*;
 public class GradleCommandRunner {
     public static void setup(String modName) throws IOException, InterruptedException {
         String path = InstanceData.modOutputPath + modName;
-        runProcess(path + "/./gradlew.bat genIntellijRuns -p " + path);
+        runProcess(path + "/./gradlew.bat genIntellijRuns --console=rich -i -p " + path);
     }
 
     public static void buildAndRunClient(String modName) throws IOException, InterruptedException {
@@ -15,9 +15,10 @@ public class GradleCommandRunner {
         runProcess(path + "/./gradlew.bat build runClient -p " + path);
     }
 
-    public static void runProcess(String command) throws IOException, InterruptedException {
+    public static void runProcess(String command) throws IOException {
         Process process = Runtime.getRuntime().exec(command);
-        process.waitFor();
+        // Commented out waitFor() to have access to console logs
+//        process.waitFor();
 
         BufferedReader stdInput = new BufferedReader(new
                 InputStreamReader(process.getInputStream()));
@@ -31,10 +32,5 @@ public class GradleCommandRunner {
             System.out.println(line);
         }
         System.out.println("</OUTPUT>");
-        System.out.println("<ERROR>");
-        while ((line = stdError.readLine()) != null) {
-            System.out.println(line);
-        }
-        System.out.println("</ERROR>");
     }
 }

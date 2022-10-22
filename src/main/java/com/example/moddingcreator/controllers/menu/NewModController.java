@@ -1,19 +1,20 @@
 package com.example.moddingcreator.controllers.menu;
 
 import com.example.moddingcreator.data.InstanceData;
+import com.example.moddingcreator.data.LoadedModData;
+import com.example.moddingcreator.data.SceneData;
 import com.example.moddingcreator.services.GradleCommandRunner;
 import com.example.moddingcreator.services.Validator;
 import com.example.moddingcreator.util.FileUtil;
 import com.example.moddingcreator.util.SceneUtil;
+import com.example.moddingcreator.util.StringUtil;
+import com.example.moddingcreator.util.XmlUtil;
 import javafx.collections.FXCollections;
 import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
 
-import java.io.File;
-import java.io.FileReader;
-import java.io.FileWriter;
 import java.io.IOException;
 import java.net.URL;
 import java.util.ResourceBundle;
@@ -52,6 +53,9 @@ public class NewModController implements Initializable {
     @FXML
     private Button createModButton;
 
+    @FXML
+    private Button backButton;
+
     @Override
     public void initialize(URL url, ResourceBundle resourceBundle) {
         forgeVersions.setItems(FXCollections.observableArrayList(
@@ -69,28 +73,48 @@ public class NewModController implements Initializable {
         String author = authorTextField.getText();
         String description = descriptionTextArea.getText();
         // Try to create Mod
-        if (Validator.validateModSave(InstanceData.modOutputPath, modName, modid)) {
+        if (Validator.validateModSave(modName, modid)) {
+
+            // Setup popup
+            PopupControl popupControl = new PopupControl();
+            popupControl.setId("progressBarPopup");
+            // popupControl.setSkin();
+            popupControl.show(SceneUtil.getStage(event));
+
             // Clone forge mod repo to output/createdmods
             FileUtil.cloneRepository(
                     "src/main/resources/com/example/moddingcreator/forgeversions/" + forgeVersions.getValue(),
                     InstanceData.modOutputPath,
                     modName
             );
-            // Setup mod
+            // Setup LoadedModData to match mod
+            LoadedModData.setupModInstanceData(modName, modid);
+            // Setup mod - OLD
             GradleCommandRunner.setup(modName);
-            // Setup InstanceData to match mod
-            InstanceData.setupModInstanceData(modName, modid);
+            // Alt setup gradle run - NEW
+//            GradleCommandExecutor.setup();
             // Adjust files to match mod
             updateModpack(modName, modid, author, description);
+            // Add save to XML
+            XmlUtil.addSave(modName, modid);
+
+            // Hide popup
+            popupControl.hide();
+
             // Successfully created mod
             System.out.println("Successfully created mod!");
             // Load in mod
-            SceneUtil.switchScene(event, "/com/example/moddingcreator/view/mod/mod-menu.fxml", "Mod Menu", 500, 500);
+            SceneUtil.switchScene(event, SceneData.modMenu);
         }
         else {
             // Return error creating mod
             System.out.println("Cannot create mod, name exists or is invalid");
         }
+    }
+
+    @FXML
+    protected void onBackClicked(ActionEvent event) throws IOException {
+        SceneUtil.switchScene(event, SceneData.mainMenu);
     }
 
     /**
@@ -110,14 +134,14 @@ public class NewModController implements Initializable {
      * @param modName
      */
     private void renameExampleDirectoryAndFile(String modName, String modid) {
-        String examplePath = InstanceData.modJavaPath + "com/example/";
+        String examplePath = LoadedModData.modJavaPath + "com/example/";
 
         // Change directory name
         boolean renameFlag = FileUtil.renameFile(examplePath + "examplemod", examplePath + modid);
         if (renameFlag) {
             // Change file name
             renameFlag = FileUtil.renameFile(examplePath + modid + "/ExampleMod.java",
-                    examplePath + modid + "/" + modid + ".java");
+                    examplePath + modid + "/" + StringUtil.convertToClassString(modid) + ".java");
             if (!renameFlag) {
                 System.out.println("Unable to rename file");
             }
@@ -136,12 +160,12 @@ public class NewModController implements Initializable {
      */
     private void replaceExampleModReferences(String modName, String modid, String author, String description) {
         // Paths
-        String modidFilePath = InstanceData.modJavaPath + "com/example/" + modid + "/" + modid + ".java";
-        String packMcmetaPath = InstanceData.modResourcePath + "pack.mcmeta";
-        String modsTomlPath = InstanceData.modResourcePath + "META-INF/mods.toml";
+        String modidFilePath = LoadedModData.modJavaPath + "com/example/" + modid + "/" + StringUtil.convertToClassString(modid) + ".java";
+        String packMcmetaPath = LoadedModData.modResourcePath + "pack.mcmeta";
+        String modsTomlPath = LoadedModData.modResourcePath + "META-INF/mods.toml";
 
         // Main modid.java file
-        FileUtil.replaceAllOccurrences(modidFilePath, "ExampleMod", modid, true);
+        FileUtil.replaceAllOccurrences(modidFilePath, "ExampleMod", StringUtil.convertToClassString(modid), true);
 
         // pack.mcmeta file
         FileUtil.replaceAllOccurrences(packMcmetaPath, "examplemod", modid);

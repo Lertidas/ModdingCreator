@@ -9,5 +9,8 @@
             prefHeight="400.0" prefWidth="600.0">
     <Label fx:id="loadLabel" layoutX="150" layoutY="290">Saved Mods</Label>
     <ComboBox fx:id="savedMods" layoutX="140" layoutY="320"/>
-    <Button fx:id="loadModButton" layoutX="300" layoutY="250" onAction="#onLoadModClick">Load Mod</Button>
+    <Button fx:id="loadModButton" layoutX="300" layoutY="250" prefHeight="50" prefWidth="100" onAction="#onLoadModClick">Load Mod</Button>
+    <Button fx:id="deleteModButton" layoutX="300" layoutY="350" prefHeight="50" prefWidth="100" onAction="#onDeleteModClick">Delete Mod</Button>
+
+    <Button fx:id="backButton" layoutX="10" layoutY="470" onAction="#onBackClicked">Back</Button>
 </AnchorPane>

@@ -1,12 +1,13 @@
 package com.example.moddingcreator.services;
 
-import com.example.moddingcreator.util.FileUtil;
+import com.example.moddingcreator.util.XmlUtil;
+
 
 public class Validator {
-    public static boolean validateModSave(String output, String modName, String modid) {
+    public static boolean validateModSave(String modName, String modid) {
         return validateName(modName) &&
                 validateName(modid) &&
-                !FileUtil.hasItemInDirectory(output, modName);
+                !(XmlUtil.getSaveNames().contains(modName));
     }
 
     public static boolean validateModLoad(String modName) {
