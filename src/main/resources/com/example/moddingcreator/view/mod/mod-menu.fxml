@@ -9,7 +9,13 @@
             fx:controller="com.example.moddingcreator.controllers.mod.ModMenuController"
             prefHeight="400.0" prefWidth="600.0">
     <Label fx:id="modNameLabel" layoutX="400" layoutY="100"/>
-    <Label fx:id="modIdLabel" layoutX="400" layoutY="250"/>
+    <Label fx:id="addItemsToMod" layoutX="400" layoutY="150">Add Item Options:</Label>
+
+    <Label fx:id="createBlockLabel" layoutX="50" layoutY="200">Create Block</Label>
+    <Button fx:id="createBlockButton" layoutX="50" layoutY="220" onAction="#createBlockClicked"/>
+
+    <Label fx:id="createItemLabel" layoutX="150" layoutY="200">Create Item</Label>
+    <Button fx:id="createItemButton" layoutX="150" layoutY="220" onAction="#createItemClicked"/>
 
     <Button fx:id="mainMenuButton" layoutX="10" layoutY="570" onAction="#mainMenuClicked">Main Menu</Button>
     <Button fx:id="launchModButton" layoutX="400" layoutY="500" onAction="#launchModClicked">Launch Mod</Button>

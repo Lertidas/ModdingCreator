@@ -7,4 +7,6 @@ public class SceneData {
     public static SceneModel newMod = new SceneModel(InstanceData.viewFilePath + "menu/new-mod.fxml", "New mod", 500, 500);
     public static SceneModel loadMod = new SceneModel(InstanceData.viewFilePath + "menu/load-mod.fxml", "Load mod", 500, 500);
     public static SceneModel modMenu = new SceneModel(InstanceData.viewFilePath + "mod/mod-menu.fxml", "Mod Menu", 800, 600);
+    public static SceneModel createBlock = new SceneModel(InstanceData.viewFilePath + "mod/create-block.fxml", "Create Block", 800, 600);
+    public static SceneModel createItem = new SceneModel(InstanceData.viewFilePath + "mod/create-item.fxml", "Create Item", 800, 600);
 }

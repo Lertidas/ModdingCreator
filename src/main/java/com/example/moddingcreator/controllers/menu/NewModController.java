@@ -3,6 +3,7 @@ package com.example.moddingcreator.controllers.menu;
 import com.example.moddingcreator.data.InstanceData;
 import com.example.moddingcreator.data.LoadedModData;
 import com.example.moddingcreator.data.SceneData;
+import com.example.moddingcreator.data.StringLocatorData;
 import com.example.moddingcreator.services.GradleCommandRunner;
 import com.example.moddingcreator.services.Validator;
 import com.example.moddingcreator.util.FileUtil;
@@ -14,9 +15,11 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
+import org.apache.commons.io.FileSystemUtils;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.HashMap;
 import java.util.ResourceBundle;
 
 public class NewModController implements Initializable {
@@ -75,12 +78,6 @@ public class NewModController implements Initializable {
         // Try to create Mod
         if (Validator.validateModSave(modName, modid)) {
 
-            // Setup popup
-            PopupControl popupControl = new PopupControl();
-            popupControl.setId("progressBarPopup");
-            // popupControl.setSkin();
-            popupControl.show(SceneUtil.getStage(event));
-
             // Clone forge mod repo to output/createdmods
             FileUtil.cloneRepository(
                     "src/main/resources/com/example/moddingcreator/forgeversions/" + forgeVersions.getValue(),
@@ -89,17 +86,20 @@ public class NewModController implements Initializable {
             );
             // Setup LoadedModData to match mod
             LoadedModData.setupModInstanceData(modName, modid);
-            // Setup mod - OLD
+
+            // Start Progress bar
+            // TODO
+
+            // Setup mod
             GradleCommandRunner.setup(modName);
-            // Alt setup gradle run - NEW
-//            GradleCommandExecutor.setup();
+
+            // End Progress bar
+            // TODO
+
             // Adjust files to match mod
             updateModpack(modName, modid, author, description);
             // Add save to XML
             XmlUtil.addSave(modName, modid);
-
-            // Hide popup
-            popupControl.hide();
 
             // Successfully created mod
             System.out.println("Successfully created mod!");
@@ -127,6 +127,7 @@ public class NewModController implements Initializable {
     private void updateModpack(String modName, String modid, String author, String description) {
         renameExampleDirectoryAndFile(modName, modid);
         replaceExampleModReferences(modName, modid, author, description);
+        configureModidClass(modid);
     }
 
     /**
@@ -205,5 +206,22 @@ public class NewModController implements Initializable {
                     "adipiscing elit.";
             FileUtil.replaceMultiLineOccurrence(modsTomlPath, currentDescription, description);
         }
+    }
+
+    /**
+     * Setup space for BLOCKS and ITEMS within modid.java file
+     * @param modid
+     */
+    private void configureModidClass(String modid) {
+        // Paths
+        String modidFilePath = LoadedModData.modJavaPath + "com/example/" + modid + "/" + StringUtil.convertToClassString(modid) + ".java";
+        HashMap<String, String> fileConfigChangesMap = new HashMap<>();
+        fileConfigChangesMap.put("    // Creates a new Block with the id \"" + modid + ":example_block\", combining the namespace and path", "");
+        fileConfigChangesMap.put("    public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register(\"example_block\", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)));",
+                StringLocatorData.blocksLocatorComment + "\n\n");
+        fileConfigChangesMap.put("    // Creates a new BlockItem with the id \"" + modid + ":example_block\", combining the namespace and path", "");
+        fileConfigChangesMap.put("    public static final RegistryObject<Item> EXAMPLE_BLOCK_ITEM = ITEMS.register(\"example_block\", () -> new BlockItem(EXAMPLE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));",
+                StringLocatorData.itemsLocatorComment + "\n\n");
+        FileUtil.replaceLines(modidFilePath, fileConfigChangesMap);
     }
 }

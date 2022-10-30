@@ -4,6 +4,7 @@ import org.apache.commons.io.FileUtils;
 
 import java.io.*;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
 import java.util.Scanner;
 
@@ -30,6 +31,14 @@ public class FileUtil {
 
     public static boolean renameFile(String currentPath, String renamedPath) {
         return new File(currentPath).renameTo(new File(renamedPath));
+    }
+
+    public static void writeLinesToFile(String path, List<String> lines) throws IOException {
+        try (FileWriter fileWriter = new FileWriter(path)) {
+            for (String line : lines) {
+                fileWriter.write(line + "\n");
+            }
+        }
     }
 
     public static void replaceAllOccurrences(String path, String currentString, String newString, boolean lowerAndUpperCase) {
@@ -78,6 +87,37 @@ public class FileUtil {
                 }
                 else {
                     index = 0;
+                    newFileLines.add(line);
+                }
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // Writing
+        try (FileWriter fileWriter = new FileWriter(path)) {
+            for (String line : newFileLines) {
+                fileWriter.write(line + "\n");
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static void replaceLines(String path, HashMap<String, String> changesMap) {
+        List<String> newFileLines = new ArrayList<>();
+        // Reading
+        try (Scanner fileReader = new Scanner(new File(path))) {
+            while (fileReader.hasNextLine()) {
+                String line = fileReader.nextLine();
+                if (changesMap.containsKey(line)) {
+                    String newLine = changesMap.get(line);
+                    if (!"".equals(newLine)) {
+                        newFileLines.add(newLine);
+                    }
+                }
+                else {
                     newFileLines.add(line);
                 }
             }
