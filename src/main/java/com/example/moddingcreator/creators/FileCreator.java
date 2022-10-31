@@ -25,7 +25,16 @@ public class FileCreator {
         }
 
         // Add in class name and extension
-        linesToWrite.add(getLine("public class " + fileName + " extends " + extensions.get(0), " {", indents));
+        StringBuilder extendsStringBuilder = new StringBuilder();
+        int extensionsLength = extensions.size();
+        if (extensionsLength > 0) {
+            extendsStringBuilder.append(" extends ");
+        }
+        for (int i = 0; i < extensionsLength; i++) {
+            extendsStringBuilder.append(extensions.get(i));
+            extendsStringBuilder.append((i == extensionsLength - 1) ? ", " : "");
+        }
+        linesToWrite.add(getLine("public class " + fileName + extendsStringBuilder, " {", indents));
         indents += 1;
 
         // Add in methods
