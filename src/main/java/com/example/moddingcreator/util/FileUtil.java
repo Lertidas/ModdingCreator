@@ -29,6 +29,15 @@ public class FileUtil {
         FileUtils.deleteDirectory(directory);
     }
 
+    public static void createDirectory(String directoryPath) {
+        createDirectory(new File(directoryPath));
+    }
+
+    public static void createDirectory(File directory) {
+        boolean result = directory.mkdir();
+        System.out.println(result ? "Successfully created directory" : "Error when creating directory");
+    }
+
     public static boolean renameFile(String currentPath, String renamedPath) {
         return new File(currentPath).renameTo(new File(renamedPath));
     }

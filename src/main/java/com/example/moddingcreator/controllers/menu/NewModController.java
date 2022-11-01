@@ -1,9 +1,6 @@
 package com.example.moddingcreator.controllers.menu;
 
-import com.example.moddingcreator.data.InstanceData;
-import com.example.moddingcreator.data.LoadedModData;
-import com.example.moddingcreator.data.SceneData;
-import com.example.moddingcreator.data.StringLocatorData;
+import com.example.moddingcreator.data.*;
 import com.example.moddingcreator.services.GradleCommandRunner;
 import com.example.moddingcreator.services.Validator;
 import com.example.moddingcreator.util.FileUtil;
@@ -15,7 +12,6 @@ import javafx.event.ActionEvent;
 import javafx.fxml.FXML;
 import javafx.fxml.Initializable;
 import javafx.scene.control.*;
-import org.apache.commons.io.FileSystemUtils;
 
 import java.io.IOException;
 import java.net.URL;
@@ -128,6 +124,8 @@ public class NewModController implements Initializable {
         renameExampleDirectoryAndFile(modName, modid);
         replaceExampleModReferences(modName, modid, author, description);
         configureModidClass(modid);
+        // Setup Mod Class folders inside java/com/example/modid/
+        createClassDirectories();
     }
 
     /**
@@ -216,12 +214,21 @@ public class NewModController implements Initializable {
         // Paths
         String modidFilePath = LoadedModData.modJavaPath + "com/example/" + modid + "/" + StringUtil.convertToClassString(modid) + ".java";
         HashMap<String, String> fileConfigChangesMap = new HashMap<>();
-        fileConfigChangesMap.put("    // Creates a new Block with the id \"" + modid + ":example_block\", combining the namespace and path", "");
-        fileConfigChangesMap.put("    public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register(\"example_block\", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)));",
+        fileConfigChangesMap.put(FileData.indent + "// Creates a new Block with the id \"" + modid + ":example_block\", combining the namespace and path", "");
+        fileConfigChangesMap.put(FileData.indent + "public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register(\"example_block\", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)));",
                 StringLocatorData.blocksLocatorComment + "\n\n");
-        fileConfigChangesMap.put("    // Creates a new BlockItem with the id \"" + modid + ":example_block\", combining the namespace and path", "");
-        fileConfigChangesMap.put("    public static final RegistryObject<Item> EXAMPLE_BLOCK_ITEM = ITEMS.register(\"example_block\", () -> new BlockItem(EXAMPLE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));",
+        fileConfigChangesMap.put(FileData.indent + "// Creates a new BlockItem with the id \"" + modid + ":example_block\", combining the namespace and path", "");
+        fileConfigChangesMap.put(FileData.indent + "public static final RegistryObject<Item> EXAMPLE_BLOCK_ITEM = ITEMS.register(\"example_block\", () -> new BlockItem(EXAMPLE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));",
                 StringLocatorData.itemsLocatorComment + "\n\n");
         FileUtil.replaceLines(modidFilePath, fileConfigChangesMap);
+
+    }
+
+    /**
+     * Creates items and blocks directories within forge files
+     */
+    private void createClassDirectories() {
+        FileUtil.createDirectory(LoadedModData.modClassesPath + "items/");
+        FileUtil.createDirectory(LoadedModData.modClassesPath + "blocks/");
     }
 }

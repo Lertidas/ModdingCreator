@@ -32,7 +32,7 @@ public class FileCreator {
         }
         for (int i = 0; i < extensionsLength; i++) {
             extendsStringBuilder.append(extensions.get(i));
-            extendsStringBuilder.append((i == extensionsLength - 1) ? ", " : "");
+            extendsStringBuilder.append((i == extensionsLength - 1) ? "" : ", ");
         }
         linesToWrite.add(getLine("public class " + fileName + extendsStringBuilder, " {", indents));
         indents += 1;
