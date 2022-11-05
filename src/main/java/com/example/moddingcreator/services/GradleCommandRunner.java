@@ -32,5 +32,11 @@ public class GradleCommandRunner {
             System.out.println(line);
         }
         System.out.println("</OUTPUT>");
+
+        System.out.println("<ERROR>");
+        while ((line = stdError.readLine()) != null) {
+            System.out.println(line);
+        }
+        System.out.println("</ERROR>");
     }
 }

@@ -26,7 +26,7 @@ public class MethodModel {
         this.body = body;
     }
 
-    public String getSignature() {
+    public String getSignatureRepresentation() {
         StringBuilder stringBuilder = new StringBuilder();
         stringBuilder.append(accessLevelModifier.toString().toLowerCase()).append(" ");
         stringBuilder.append(isStatic ? "static " : "");

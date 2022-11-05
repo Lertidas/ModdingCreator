@@ -7,6 +7,7 @@ module com.example.moddingcreator {
     requires org.apache.commons.io;
 //    requires gradle.tooling.api;
     requires java.xml;
+    requires java.compiler;
 
     opens com.example.moddingcreator to javafx.fxml;
     exports com.example.moddingcreator;

@@ -42,6 +42,50 @@ public class FileUtil {
         return new File(currentPath).renameTo(new File(renamedPath));
     }
 
+    public static void writeLinesAfterTargets(String path, HashMap<String, String> targetMap) {
+        List<String> newFileLines = new ArrayList<>();
+        // Reading
+        try (Scanner fileReader = new Scanner(new File(path))) {
+            while (fileReader.hasNextLine()) {
+                String line = fileReader.nextLine();
+                newFileLines.add(line);
+                if (targetMap.containsKey(line)) {
+                    newFileLines.add(targetMap.get(line));
+                }
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        // Writing
+        try (FileWriter fileWriter = new FileWriter(path)) {
+            for (String line : newFileLines) {
+                fileWriter.write(line + "\n");
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+    }
+
+    public static boolean hasAtLeastLines(String path, int linesCount) {
+        int count = 0;
+        // Reading
+        try (Scanner fileReader = new Scanner(new File(path))) {
+            while (fileReader.hasNextLine()) {
+                count += 1;
+                fileReader.nextLine();
+                if (count >= linesCount) {
+                    return true;
+                }
+            }
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
+        return false;
+    }
+
     public static void writeLinesToFile(String path, List<String> lines) throws IOException {
         try (FileWriter fileWriter = new FileWriter(path)) {
             for (String line : lines) {

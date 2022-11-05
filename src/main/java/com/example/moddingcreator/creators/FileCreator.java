@@ -16,12 +16,14 @@ public class FileCreator {
         int indents = 0;
 
         // Add in package Reference
-        linesToWrite.add(getLine(packageReference, ";\n", indents));
+        if (!"".equals(packageReference)) {
+            linesToWrite.add(getLine("package " + packageReference, ";\n", indents));
+        }
 
         // Add in imports
         int importsLength = imports.size();
         for (int i = 0; i < importsLength; i++) {
-            linesToWrite.add(getLine(imports.get(i), ";" + (i == importsLength - 1 ? "\n" : ""), indents));
+            linesToWrite.add(getLine("import " + imports.get(i), ";" + (i == importsLength - 1 ? "\n" : ""), indents));
         }
 
         // Add in class name and extension
@@ -39,7 +41,7 @@ public class FileCreator {
 
         // Add in methods
         for (MethodModel methodModel : models) {
-            linesToWrite.add(getLine(methodModel.getSignature(), " {", indents));
+            linesToWrite.add(getLine(methodModel.getSignatureRepresentation(), " {", indents));
             indents += 1;
             for (String bodyLine : methodModel.body) {
                 linesToWrite.add(getLine(bodyLine, ";", indents));
@@ -55,6 +57,6 @@ public class FileCreator {
     }
 
     public static String getLine(String content, String closing, int indents) {
-        return String.valueOf(FileData.indent).repeat(indents) + content + closing;
+        return String.valueOf(FileData.javaIndent).repeat(indents) + content + closing;
     }
 }

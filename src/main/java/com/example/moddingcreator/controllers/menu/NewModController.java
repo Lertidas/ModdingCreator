@@ -15,7 +15,9 @@ import javafx.scene.control.*;
 
 import java.io.IOException;
 import java.net.URL;
+import java.util.ArrayList;
 import java.util.HashMap;
+import java.util.List;
 import java.util.ResourceBundle;
 
 public class NewModController implements Initializable {
@@ -126,6 +128,8 @@ public class NewModController implements Initializable {
         configureModidClass(modid);
         // Setup Mod Class folders inside java/com/example/modid/
         createClassDirectories();
+        // Setup Resources for Mod
+        setupResources();
     }
 
     /**
@@ -159,12 +163,11 @@ public class NewModController implements Initializable {
      */
     private void replaceExampleModReferences(String modName, String modid, String author, String description) {
         // Paths
-        String modidFilePath = LoadedModData.modJavaPath + "com/example/" + modid + "/" + StringUtil.convertToClassString(modid) + ".java";
         String packMcmetaPath = LoadedModData.modResourcePath + "pack.mcmeta";
         String modsTomlPath = LoadedModData.modResourcePath + "META-INF/mods.toml";
 
         // Main modid.java file
-        FileUtil.replaceAllOccurrences(modidFilePath, "ExampleMod", StringUtil.convertToClassString(modid), true);
+        FileUtil.replaceAllOccurrences(LoadedModData.modidFilePath, "ExampleMod", StringUtil.convertToClassString(modid), true);
 
         // pack.mcmeta file
         FileUtil.replaceAllOccurrences(packMcmetaPath, "examplemod", modid);
@@ -212,23 +215,70 @@ public class NewModController implements Initializable {
      */
     private void configureModidClass(String modid) {
         // Paths
-        String modidFilePath = LoadedModData.modJavaPath + "com/example/" + modid + "/" + StringUtil.convertToClassString(modid) + ".java";
         HashMap<String, String> fileConfigChangesMap = new HashMap<>();
-        fileConfigChangesMap.put(FileData.indent + "// Creates a new Block with the id \"" + modid + ":example_block\", combining the namespace and path", "");
-        fileConfigChangesMap.put(FileData.indent + "public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register(\"example_block\", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)));",
-                StringLocatorData.blocksLocatorComment + "\n\n");
-        fileConfigChangesMap.put(FileData.indent + "// Creates a new BlockItem with the id \"" + modid + ":example_block\", combining the namespace and path", "");
-        fileConfigChangesMap.put(FileData.indent + "public static final RegistryObject<Item> EXAMPLE_BLOCK_ITEM = ITEMS.register(\"example_block\", () -> new BlockItem(EXAMPLE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));",
-                StringLocatorData.itemsLocatorComment + "\n\n");
-        FileUtil.replaceLines(modidFilePath, fileConfigChangesMap);
+        fileConfigChangesMap.put(FileData.javaIndent + "// Creates a new Block with the id \"" + modid + ":example_block\", combining the namespace and path", "");
+        fileConfigChangesMap.put(FileData.javaIndent + "public static final RegistryObject<Block> EXAMPLE_BLOCK = BLOCKS.register(\"example_block\", () -> new Block(BlockBehaviour.Properties.of(Material.STONE)));",
+                StringLocatorData.modidBlocksLocatorComment + "\n\n" + StringLocatorData.modidBlockItemsLocatorComment + "\n");
+        fileConfigChangesMap.put(FileData.javaIndent + "// Creates a new BlockItem with the id \"" + modid + ":example_block\", combining the namespace and path", "");
+        fileConfigChangesMap.put(FileData.javaIndent + "public static final RegistryObject<Item> EXAMPLE_BLOCK_ITEM = ITEMS.register(\"example_block\", () -> new BlockItem(EXAMPLE_BLOCK.get(), new Item.Properties().tab(CreativeModeTab.TAB_BUILDING_BLOCKS)));",
+                StringLocatorData.modidItemsLocatorComment);
+        FileUtil.replaceLines(LoadedModData.modidFilePath, fileConfigChangesMap);
 
     }
 
     /**
-     * Creates items and blocks directories within forge files
+     * Creates block, item, and blockItem directories within forge files
      */
     private void createClassDirectories() {
-        FileUtil.createDirectory(LoadedModData.modClassesPath + "items/");
-        FileUtil.createDirectory(LoadedModData.modClassesPath + "blocks/");
+        FileUtil.createDirectory(LoadedModData.modBlockClassPath);
+        FileUtil.createDirectory(LoadedModData.modItemClassPath);
+        FileUtil.createDirectory(LoadedModData.modBlockItemClassPath);
+    }
+
+    /**
+     * Setup Resources directories and files
+     */
+    private void setupResources() {
+        // Setup directories
+        FileUtil.createDirectory(LoadedModData.modDataPath);
+
+        FileUtil.createDirectory(LoadedModData.modResourcePath + "assets/");
+        FileUtil.createDirectory(LoadedModData.resourcesModidPath);
+
+        FileUtil.createDirectory(LoadedModData.resourcesModidPath + "blockstates/");
+
+        FileUtil.createDirectory(LoadedModData.resourcesModidPath + "lang/");
+
+        FileUtil.createDirectory(LoadedModData.resourcesModidPath + "models/");
+        FileUtil.createDirectory(LoadedModData.resourcesModidPath + "models/block/");
+        FileUtil.createDirectory(LoadedModData.resourcesModidPath + "models/item/");
+
+        FileUtil.createDirectory(LoadedModData.resourcesModidPath + "textures/");
+        FileUtil.createDirectory(LoadedModData.resourcesModidPath + "textures/block/");
+        FileUtil.createDirectory(LoadedModData.resourcesModidPath + "textures/item/");
+
+        // Setup data directories
+        FileUtil.createDirectory(LoadedModData.modResourcePath + "data/");
+        FileUtil.createDirectory(LoadedModData.dataModidPath);
+        FileUtil.createDirectory(LoadedModData.dataModidPath + "loot_tables/");
+        FileUtil.createDirectory(LoadedModData.dataModidPath + "loot_tables/blocks/");
+
+        // Setup en_us.json file
+        List<String> langLines = new ArrayList<>();
+        langLines.add("{");
+        langLines.add("}");
+
+        // Create itemData.xml file
+        XmlUtil.createXML("item-data", "itemData.xml");
+
+        // Create blockData.xml file
+        XmlUtil.createXML("block-data", "blockData.xml");
+
+        try {
+            FileUtil.writeLinesToFile(LoadedModData.resourcesModidPath + "lang/en_us.json", langLines);
+        }
+        catch (IOException e) {
+            throw new RuntimeException(e);
+        }
     }
 }
