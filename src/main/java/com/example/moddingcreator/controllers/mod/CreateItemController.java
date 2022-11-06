@@ -26,6 +26,9 @@ public class CreateItemController {
     public Button createButton;
 
     @FXML
+    public Button backButton;
+
+    @FXML
     protected void onCreateClicked(ActionEvent event) throws IOException {
 
         String itemName = itemNameTextField.getText();

@@ -10,8 +10,8 @@
             fx:controller="com.example.moddingcreator.controllers.mod.CreateItemController"
             prefHeight="400.0" prefWidth="600.0">
 
-    <Label fx:id="itemNameLabel" layoutX="300" layoutY="10">Item Name</Label>
-    <TextField fx:id="itemNameTextField" layoutX="200" layoutY="50"/>
+    <Label fx:id="itemNameLabel" layoutX="145" layoutY="30">Item Name</Label>
+    <TextField fx:id="itemNameTextField" layoutX="100" layoutY="50"/>
 
     <Button fx:id="createButton" layoutX="300" layoutY="500" onAction="#onCreateClicked">Create</Button>
 
